@@ -28,7 +28,7 @@ function Guerrilla(ip, agent) {
 
 	self.getEmailAddress = function(cb) {
 		if (self.email) {
-			cb(null, self.email);
+			return cb(null, self.email);
 		}
 		request(getEndpoint('get_email_address'), function (err, res, body) {
 			if (err) {
@@ -79,7 +79,7 @@ function Guerrilla(ip, agent) {
 
 		request(endpoint, function(err, res, body) {
 			if (err) {
-				cb(err);
+				return cb(err);
 			}
 			try {
 				var resObj = JSON.parse(body);
@@ -87,6 +87,23 @@ function Guerrilla(ip, agent) {
 			} catch (parsingError) {
 				cb(parsingError);
 			}
+		});
+	};
+
+	self.fetchEmail = function fetchEmail(emailId) {
+		const endpoint = `${getEndpoint('fetch_email')}&email_id=${emailId}`;
+
+		return new Promise((resolve, reject) => {
+			request(endpoint, (err, res, body) => {
+				if (err) {
+					return reject(err);
+				}
+				try {
+					resolve(JSON.parse(body));
+				} catch (parsingError) {
+					reject(parsingError);
+				}
+			});
 		});
 	};
 }

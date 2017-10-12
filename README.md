@@ -69,3 +69,10 @@ guerrillaApi.checkEmail(function (err, emails) {
 	}
 });
 ```
+
+Once we have an email, we can fetch the full mail body if we want:
+```js
+guerrillaApi.fetchEmail(email.mail_id).then(
+	(fullEmail) =>
+		console.log(`Got full email body:\n\n${fullEmail.mail_excerpt}`));
+```

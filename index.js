@@ -2,7 +2,7 @@ var request = require('request').defaults({jar: true});
 var validator = require('validator');
 var S = require('string');
 
-function Guerrilla(ip, agent) {
+function Guerrilla(ip, agent, requestFn = request) {
 	var self = this;
 
 	var guerrillaRegExp = /^([\-\.]*[A-Za-z0-9]+[\-\.]*)+$/;
@@ -30,7 +30,7 @@ function Guerrilla(ip, agent) {
 		if (self.email) {
 			return cb(null, self.email);
 		}
-		request(getEndpoint('get_email_address'), function (err, res, body) {
+		requestFn(getEndpoint('get_email_address'), function (err, res, body) {
 			if (err) {
 				cb(err);
 			} else if (res.statusCode != 200) {
@@ -60,7 +60,7 @@ function Guerrilla(ip, agent) {
 		endpoint += '&lang=en';
 		endpoint += '&domain=guerrillamail.com';
 
-		request(endpoint, function(err, res, body) {
+		requestFn(endpoint, function(err, res, body) {
 			if (err) {
 				cb(err);
 			} else if (res.statusCode != 200) {
@@ -77,7 +77,7 @@ function Guerrilla(ip, agent) {
 	self.checkEmail = function(cb) {
 		var endpoint = getEndpoint('get_email_list') + '&offset=0';
 
-		request(endpoint, function(err, res, body) {
+		requestFn(endpoint, function(err, res, body) {
 			if (err) {
 				return cb(err);
 			}
@@ -94,7 +94,7 @@ function Guerrilla(ip, agent) {
 		const endpoint = `${getEndpoint('fetch_email')}&email_id=${emailId}`;
 
 		return new Promise((resolve, reject) => {
-			request(endpoint, (err, res, body) => {
+			requestFn(endpoint, (err, res, body) => {
 				if (err) {
 					return reject(err);
 				}

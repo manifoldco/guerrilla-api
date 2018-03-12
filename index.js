@@ -2,7 +2,7 @@ var request = require('request').defaults({jar: true});
 var validator = require('validator');
 var S = require('string');
 
-function Guerrilla(ip, agent, requestFn = request) {
+function Guerrilla(ip, agent, requestFn = request, promiser = Promise) {
 	var self = this;
 
 	var guerrillaRegExp = /^([\-\.]*[A-Za-z0-9]+[\-\.]*)+$/;
@@ -93,7 +93,7 @@ function Guerrilla(ip, agent, requestFn = request) {
 	self.fetchEmail = function fetchEmail(emailId) {
 		const endpoint = `${getEndpoint('fetch_email')}&email_id=${emailId}`;
 
-		return new Promise((resolve, reject) => {
+		return new promiser((resolve, reject) => {
 			requestFn(endpoint, (err, res, body) => {
 				if (err) {
 					return reject(err);
